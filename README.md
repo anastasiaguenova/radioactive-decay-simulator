@@ -4,7 +4,7 @@ A simulator for radioactive decay to be used in physics class.
 
 ## Getting Started
 
-To quickly start using the software on a windows machine, download the following archive onto your personal computer: [Google Drive](https://drive.google.com/file/d/0B8DQ11iwBOQLbjdJS2FibHlHNDA/view?usp=sharing)
+To quickly start using the software on a windows machine, download the following archive onto your personal computer: [Google Drive](https://drive.google.com/file/d/0B8DQ11iwBOQLbjdJS2FibHlHNDA/view?usp=sharing). 
 Once the download is complete, unzip the files and simply double click the "Radioactive Decay Simulator.exe" file in the main directory.
 
 If you want to contribute to the project I suggest you clone the "electron" folder. You can then run the software by following the instructions in the Development section.
@@ -38,7 +38,7 @@ This software was written to make physics experiments around the law for radioac
 
 ## Version
 
-Current version is 0.1. 
+Current version is 0.1. (05.2017)
 
 Future versions will include:
 * Code improvements in both formatting and algorithms
@@ -46,8 +46,10 @@ Future versions will include:
 * Automatic graph generation and PDF export
 * Improved documentation
 
+I encourage teachers and students to contribute to this software and make it more useful. Hopefully it will be used in classrooms around the world. 
+
 ## License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
 
 ## Acknowledgments
 
