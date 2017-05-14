@@ -54,3 +54,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) f
 ## Acknowledgments
 
 * My physics teacher, Ms Ralitsa Ranchova, for supporting and encouraging me in pursuing my interests. 
+* This README.md was written with the help of the formatting done by [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2) and [JXson](https://gist.github.com/jxson/1784669).
