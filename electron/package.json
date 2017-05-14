@@ -1,0 +1,43 @@
+{
+  "name": "radioactive-decay-simulator",
+  "productName": "Radioactive Decay Simulator",
+  "version": "0.1",
+  "description": "A simulator for radioactive decay to be used in physics class.",
+  "license": "MIT",
+  "repository": "anastasiaguenova/radioactive-decay-simulator",
+  "author": {
+    "name": "Anastasia Guenova",
+    "email": "guenova.anastasia@gmail.com",
+    "url": "https://github.com/anastasiaguenova"
+  },
+  "scripts": {
+    "test": "xo",
+    "start": "electron .",
+    "build": "electron-packager . --out=dist --asar --overwrite --all",
+    "pack": "build --dir",
+	"dist": "build"
+  },
+  "dependencies": {
+    "electron-debug": "^1.0.0"
+  },
+  "devDependencies": {
+    "devtron": "^1.1.0",
+    "electron-packager": "^8.0.0",
+    "electron": "^1.6.6",
+    "xo": "^0.18.0"
+  },
+  "xo": {
+    "envs": [
+      "node",
+      "browser"
+    ]
+  },
+  "build": {
+  "appId": "your.id",
+  "mac": {
+    "category": "your.app.category.type"
+  },
+  "target": "portable"
+}
+
+}

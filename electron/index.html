@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Моделиране на Радиоактивен Разпад</title>
+		<!--<link rel="stylesheet" href="index.css">-->
+		<link rel="stylesheet" href="node_modules/purecss/build/base-min.css">
+		<link rel="stylesheet" href="node_modules/purecss/build/pure.css">
+		<link rel="stylesheet" href="node_modules/purecss/build/buttons.css">
+		<link rel="stylesheet" href="node_modules/purecss/build/grids.css">
+		<link rel="stylesheet" href="node_modules/purecss/build/menus.css">
+		<link rel="stylesheet" href="node_modules/purecss/build/pure-min.css">
+		<link rel="stylesheet" href="node_modules/purecss/build/forms-min.css">
+		<link rel="stylesheet" href="node_modules/purecss/build/tables.css">
+
+	</head>
+	<body>
+		<!--<div class="container">
+			<header>
+				<h1>Моделиране на Радиоактивен Разпад</h1>
+			</header>
+			<section class="main">
+				<a class="pure-button" href="#">A Pure Button</a>
+				<button class="pure-button">A Pure Button</button>
+
+			</section>
+			<footer></footer>
+
+		</div>-->
+	<div class="header">
+		<h1>Моделиране на радиоактивен разпад</h1>
+		<h2>Помощен софтуер за онагледаяване на закона за радиоактивното разпадане.</h2>
+		<h5>Version 0.1 05/2017</h5>
+	</div>
+
+
+	<div class="pure-g">
+		<div class="pure-u-1"><p>
+			<div class="l-box">
+					<form class="pure-form pure-form" id="search-form">
+						<fieldset>
+							<div class="pure-control-group">
+								<label for="nucleus-count" id="nucleus-count-label">Брой ядра</label>
+								<input id="nucleus-count" type="text" placeholder="" value="">
+								<a class="pure-button pure-button-primary" id="submit-button">Симулирай</a>
+							</div>
+						</fieldset>
+					</form>
+			</div>
+			<div class="header">
+				<h2>Резултати.</h2>
+			</div>
+		</div>
+		<div class="pure-u-1-2"><p>
+			<div class="p-box">
+				<h3>Експериментални данни</h3>
+				<table class="pure-table" id="table-1">
+					<thead>
+						<tr>
+							<th>Брой хвърляния</th>
+							<th>Брой оцелели ядра</th>
+						</tr>
+					</thead>
+
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</p></div>
+		<div class="pure-u-1-2"><p>
+			<div class="p-box">
+				<h3>Данни от закона за полуразпад</h3>
+				<table class="pure-table" id="table-2">
+					<thead>
+						<tr>
+							<th>Брой хвърляния</th>
+							<th>Брой оцелели ядра</th>
+						</tr>
+					</thead>
+
+					<tbody>
+					</tbody>
+				</table>	
+			</div>
+		</p></div>
+	</div>
+
+	</body>
+</html>
+
+<script>
+	var ipc = require('electron').ipcRenderer
+
+	var searchForm = document.getElementById('search-form')
+	var nucleusCount = document.getElementById("nucleus-count")
+	const submitButton = document.getElementById('submit-button')
+
+	// Initializing the tables
+	var myTable1 = document.getElementById("table-1");
+	var myTable2 = document.getElementById("table-2");
+
+	// So we can clear the table contents between simulations
+	myTable1.oldHTML=myTable1.innerHTML;
+	myTable2.oldHTML=myTable2.innerHTML;
+
+
+	ipc.on('nucleus-decay-random-reply', function (event, arg) {
+		// const table = document.getElementById('table')
+		myTable1.innerHTML=myTable1.oldHTML;
+
+		var size = arg.length 
+
+		for(i = 0; i < size; i++){
+			var tableRow = document.createElement("tr")
+
+			var cell1 = document.createElement("td")
+			var cell2 = document.createElement("td")
+
+			var content1 = document.createTextNode(i+1)
+			var content2 = document.createTextNode(arg[i])
+
+			cell1.appendChild(content1)
+			cell2.appendChild(content2)
+
+			tableRow.appendChild(cell1)
+			tableRow.appendChild(cell2)
+
+			myTable1.appendChild(tableRow)
+		}
+	})
+
+	ipc.on('nucleus-decay-formula-reply', function (event, arg) {
+		// const table = document.getElementById('table')
+		myTable2.innerHTML=myTable2.oldHTML;
+
+		var size = arg.length 
+
+		for(i = 0; i < size; i++){
+			var tableRow = document.createElement("tr")
+
+			var cell1 = document.createElement("td")
+			var cell2 = document.createElement("td")
+
+			var content1 = document.createTextNode(i+1)
+			var content2 = document.createTextNode(arg[i])
+
+			cell1.appendChild(content1)
+			cell2.appendChild(content2)
+
+			tableRow.appendChild(cell1)
+			tableRow.appendChild(cell2)
+
+			myTable2.appendChild(tableRow)
+		}
+	})
+
+	// Communication with JavaScript file
+	function calculate(){
+		ipc.send('calculate-nucleus-random-decay', nucleusCount.value)
+		ipc.send('calculate-nucleus-formula-decay', nucleusCount.value)
+	}
+
+	// Event handlers
+	function documentKeyUp(event) {
+		if (event.keyCode == 13) {
+			calculate()
+		}
+	}
+	document.addEventListener('keyup', documentKeyUp, false)
+	
+	submitButton.addEventListener('click', function () {
+			calculate()
+	})
+
+	searchForm.addEventListener('submit', function(event) {
+		event.preventDefault();
+		if (event.keyCode == 13) {
+			calculate()
+    	}
+	})
+</script>
