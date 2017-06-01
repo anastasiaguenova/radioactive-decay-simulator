@@ -2,8 +2,9 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<!--Заглавие-->
 		<title>Моделиране на Радиоактивен Разпад</title>
-		<!--<link rel="stylesheet" href="index.css">-->
+		<!--Импортиране на .css  файлове, които се грижат за дизайна и подребата-->
 		<link rel="stylesheet" href="node_modules/purecss/build/base-min.css">
 		<link rel="stylesheet" href="node_modules/purecss/build/pure.css">
 		<link rel="stylesheet" href="node_modules/purecss/build/buttons.css">
@@ -12,61 +13,66 @@
 		<link rel="stylesheet" href="node_modules/purecss/build/pure-min.css">
 		<link rel="stylesheet" href="node_modules/purecss/build/forms-min.css">
 		<link rel="stylesheet" href="node_modules/purecss/build/tables.css">
-
 	</head>
 	<body>
-		<!--<div class="container">
-			<header>
-				<h1>Моделиране на Радиоактивен Разпад</h1>
-			</header>
-			<section class="main">
-				<a class="pure-button" href="#">A Pure Button</a>
-				<button class="pure-button">A Pure Button</button>
-
-			</section>
-			<footer></footer>
-
-		</div>-->
+	
+	<!--Заглавна секция-->
 	<div class="header">
+		<!--Заглавия и описание-->
 		<h1>Моделиране на радиоактивен разпад</h1>
-		<h2>Помощен софтуер за онагледаяване на закона за радиоактивното разпадане.</h2>
+		<h2>Помощен софтуер за онагледаяване на закона за радиоактивното разпадане</h2>
+		<!--Версия-->
 		<h5>Version 0.1 05/2017</h5>
 	</div>
 
-
+	<!--Секция с мрежово оформление "grid"-->
 	<div class="pure-g">
+		<!--Секция с ширина 1 (пълна)-->
 		<div class="pure-u-1"><p>
+			<!--Секция със специално оформление-->
 			<div class="l-box">
+					<!--Секция от клас "формуляр" за събиране на данни от потребителя-->
 					<form class="pure-form pure-form" id="search-form">
 						<fieldset>
 							<div class="pure-control-group">
+								<!--Елемент от тип label, текст с допълнителна информация-->
 								<label for="nucleus-count" id="nucleus-count-label">Брой ядра</label>
+								<!--Елемент от тип input, поле което приема стойност текст-->
 								<input id="nucleus-count" type="text" placeholder="" value="">
+								<!--Елемент от тип бутон, който служи за изпращане на стойността към алгоритъма в .javascript файла-->
 								<a class="pure-button pure-button-primary" id="submit-button">Симулирай</a>
 							</div>
 						</fieldset>
 					</form>
 			</div>
+			<!--Заглавна секция-->
 			<div class="header">
-				<h2>Резултати.</h2>
+				<h2>Резултати</h2>
 			</div>
 		</div>
+		<!--Секция с ширина 1/2 (на половина)-->
 		<div class="pure-u-1-2"><p>
+			<!--Секция със специално оформление-->
 			<div class="p-box">
+				<!--Заглавие от тип H3-->
 				<h3>Експериментални данни</h3>
+				<!--Секция от клас "таблица" с ID  table-1 -->
 				<table class="pure-table" id="table-1">
+					<!--Секция, определеяща заглавията на колонките-->
 					<thead>
+						<!--TR = table row, ред от таблицата-->
 						<tr>
+							<!--TH = table header, заглавие на колонка в таблицата-->
 							<th>Брой хвърляния</th>
 							<th>Брой оцелели ядра</th>
 						</tr>
 					</thead>
-
+					<!--Секция, съдържаваща останалото съдържание на таблицата, засега празна, пълни се от резултата от алгоритъма-->
 					<tbody>
 					</tbody>
 				</table>
-			</div>
-		</p></div>
+			</p></div>
+		</div>
 		<div class="pure-u-1-2"><p>
 			<div class="p-box">
 				<h3>Данни от закона за полуразпад</h3>
@@ -88,51 +94,73 @@
 	</body>
 </html>
 
+<!--Начало на javascript функционалност, която отговаря за комуникация с index.js и пълнене на таблиците.-->
 <script>
+	// IPC = Inter Process Communication, модул, вграден в Electron, който осигурява връзка между .HTML и .JS файловете. 
+	// Изпраща съобщения и пренася данни. 
 	var ipc = require('electron').ipcRenderer
 
-	var searchForm = document.getElementById('search-form')
-	var nucleusCount = document.getElementById("nucleus-count")
-	const submitButton = document.getElementById('submit-button')
+	// Създаваме променливи, които отговарят на елементи от .HTML частта с определени ID-та. 
 
-	// Initializing the tables
+	var searchForm = document.getElementById("search-form")
+	// Променлива, която държи референция към полето, което приема стойност за броя ядра.
+	var nucleusCount = document.getElementById("nucleus-count")
+	// Променлива, която държи референция към бутона, който служи за изпращане на информацията от полето.
+	const submitButton = document.getElementById('submit-button')
+	// Променливи, които държат референции към двете таблици
 	var myTable1 = document.getElementById("table-1");
 	var myTable2 = document.getElementById("table-2");
 
-	// So we can clear the table contents between simulations
-	myTable1.oldHTML=myTable1.innerHTML;
-	myTable2.oldHTML=myTable2.innerHTML;
+	// Операции с цел почистване на съдържанието на таблиците след повторно натискане на бутона. 
+	// Направи първичното съдържание на таблицата равно на текущото (празно)
+	myTable1.oldHTML = myTable1.innerHTML;
+	myTable2.oldHTML = myTable2.innerHTML;
 
-
+	// Този код се задейства когато javascript частта от .HTML файла получи отговор от index.js файла с код "nucleus-decay-random-reply"
+	// който сигнализира получаване на резултати от алгоритъма.  
+	// event променливата съдържа информация за "събитието" което е предизвикало изпълнението на кода (не се използва)
+	// arg променливата е масив, който съдържа резултатите от алгоритъма
 	ipc.on('nucleus-decay-random-reply', function (event, arg) {
-		// const table = document.getElementById('table')
-		myTable1.innerHTML=myTable1.oldHTML;
+		// Направи текущото съдържание на таблицата равно на първичното (празното)
+		myTable1.innerHTML = myTable1.oldHTML;
 
+		// Колко резултата имаме от алгоритъма?
 		var size = arg.length 
 
+		// Направи толкова нови редове в таблицата, колкото са резултатите от алгоритъма
 		for(i = 0; i < size; i++){
+			// Променлива, която представлява нов ред от таблицата. В документа се създава елемент от тип "tr"
 			var tableRow = document.createElement("tr")
 
+			// Променлива, която представлява table data, която се помещава в table row. В документа се създава елемент от тип "td"
 			var cell1 = document.createElement("td")
 			var cell2 = document.createElement("td")
 
+			// Променлива, която съдържа текстова елемент, който се помещава в елемент от тип table data. Променливата представлява поредния номер
+			// на периода на разпад. 
 			var content1 = document.createTextNode(i+1)
+			// Променливата представлява резултата от алгоритъма за конкретния период на разпад. 
 			var content2 = document.createTextNode(arg[i])
 
+			// Помещаваме текстовите елементи в елементите table data
 			cell1.appendChild(content1)
 			cell2.appendChild(content2)
 
+			// Помещаваме елементите table data в елемента table row. 
 			tableRow.appendChild(cell1)
 			tableRow.appendChild(cell2)
 
+			// Помещаваме новия ред от таблицата (table row) в самата таблица.
 			myTable1.appendChild(tableRow)
 		}
 	})
 
+	// TODO: Кода в двете функции за пълнене на двете таблици е идентичен. Според стандартите за програмиране, в бъдеща версия трябва да бъде изнесен
+	// в една единствена функция. 
 	ipc.on('nucleus-decay-formula-reply', function (event, arg) {
-		// const table = document.getElementById('table')
 		myTable2.innerHTML=myTable2.oldHTML;
 
+		// Кода от тук...
 		var size = arg.length 
 
 		for(i = 0; i < size; i++){
@@ -149,29 +177,36 @@
 
 			tableRow.appendChild(cell1)
 			tableRow.appendChild(cell2)
-
+			// ... до тук може да се извади в отделна функция.
 			myTable2.appendChild(tableRow)
 		}
 	})
 
-	// Communication with JavaScript file
+	// Функция, която изпраща съобщения с код за пресмятане на радиоактивен разпад с данните от полето. 
+	// Информацията се движи от .HTML файла към .JS файла за допълнителна обработка. 
 	function calculate(){
+		// nucleusCount.value е стойността от полето.
 		ipc.send('calculate-nucleus-random-decay', nucleusCount.value)
 		ipc.send('calculate-nucleus-formula-decay', nucleusCount.value)
 	}
 
-	// Event handlers
+	// Код, който "слуша" за натискане на бутони
+
+	// Функция, която изпълнява функцията calculate() ако бъде натиснат бутон на клавиaтурата "Enter", който има код 13. 
 	function documentKeyUp(event) {
 		if (event.keyCode == 13) {
 			calculate()
 		}
 	}
+	// Инструктираме .HTML файла да препраща всяко събитие на натиснат бутон към функцията documentKeyUp(event) 
 	document.addEventListener('keyup', documentKeyUp, false)
 	
+	// Казваме на бутона да изпълни фунцкия calculate() ако регистрира събитие, че е бил натиснат. 
 	submitButton.addEventListener('click', function () {
 			calculate()
 	})
 
+	// Казваме на полето да изпълни функция calculate() ако регистрира събитие за натискане на бутона Enter докато то е на фокус. 
 	searchForm.addEventListener('submit', function(event) {
 		event.preventDefault();
 		if (event.keyCode == 13) {
